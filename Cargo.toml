@@ -1,0 +1,14 @@
+[package]
+name = "multi_bin"
+version = "0.1.0"
+authors = ["Yoshikuni Jujo <PAF01143@nifty.ne.jp>"]
+
+[dependencies]
+
+[[bin]]
+name = "hello"
+path = "src/hello.rs"
+
+[[bin]]
+name = "fib0"
+path = "src/fib0.rs"
