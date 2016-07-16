@@ -16,3 +16,7 @@ path = "src/fib0.rs"
 [[bin]]
 name = "if"
 path = "src/if.rs"
+
+[[bin]]
+name = "loops"
+path = "src/loops.rs"
