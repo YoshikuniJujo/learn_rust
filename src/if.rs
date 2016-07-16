@@ -1,7 +1,7 @@
 use std::io;
 
 fn main() {
-	println!("Please type 5.");
+	println!("Please type 5 or 6.");
 
 	let mut n = String::new();
 
@@ -13,5 +13,13 @@ fn main() {
 
 	if n == 5 {
 		println!("n is five!");
+	} else if n == 6 {
+		println!("n is six!");
+	} else {
+		println!("n is not five or six :(");
 	}
+
+	let y = if n == 5 { 10 } else { 15 };
+	println!("{}", y);
+
 }
