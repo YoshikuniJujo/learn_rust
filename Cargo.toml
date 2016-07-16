@@ -24,3 +24,11 @@ path = "src/loops.rs"
 [[bin]]
 name = "vectors"
 path = "src/vectors.rs"
+
+[[bin]]
+name = "ownership"
+path = "src/ownership.rs"
+
+[[bin]]
+name = "borrowing"
+path = "src/borrowing.rs"
