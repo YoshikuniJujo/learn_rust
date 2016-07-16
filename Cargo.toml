@@ -20,3 +20,7 @@ path = "src/if.rs"
 [[bin]]
 name = "loops"
 path = "src/loops.rs"
+
+[[bin]]
+name = "vectors"
+path = "src/vectors.rs"
