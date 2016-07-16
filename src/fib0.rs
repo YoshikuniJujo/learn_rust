@@ -1,6 +1,9 @@
 use std::io;
 
 fn main() {
+
+	println!("Please type a number.");
+
 	let mut num = String::new();
 
 	io::stdin().read_line(&mut num)

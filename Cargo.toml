@@ -1,5 +1,5 @@
 [package]
-name = "multi_bin"
+name = "learn_rust"
 version = "0.1.0"
 authors = ["Yoshikuni Jujo <PAF01143@nifty.ne.jp>"]
 
@@ -12,3 +12,7 @@ path = "src/hello.rs"
 [[bin]]
 name = "fib0"
 path = "src/fib0.rs"
+
+[[bin]]
+name = "if"
+path = "src/if.rs"
