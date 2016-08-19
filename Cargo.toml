@@ -32,3 +32,11 @@ path = "src/ownership.rs"
 [[bin]]
 name = "borrowing"
 path = "src/borrowing.rs"
+
+[[bin]]
+name = "lifetime"
+path = "src/lifetime.rs"
+
+[[bin]]
+name = "mutability"
+path = "src/mutability.rs"
