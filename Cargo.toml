@@ -40,3 +40,7 @@ path = "src/lifetime.rs"
 [[bin]]
 name = "mutability"
 path = "src/mutability.rs"
+
+[[bin]]
+name = "struct"
+path = "src/struct.rs"
