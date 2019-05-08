@@ -3,25 +3,24 @@
 
 module Lib (startApp) where
 
-import Text.Blaze.Html5 ((!))
 import Prelude hiding (head)
 import Network.Wai.Handler.Warp
 import Servant
-import Servant.HTML.Blaze
+import Servant.HTML.Lucid
+import Lucid
 
 import qualified Data.Text as T
-import qualified Text.Blaze.Html5 as M
-import qualified Text.Blaze.Html5.Attributes as A
 
 data GetForm = GetForm deriving Show
 
-instance M.ToMarkup GetForm where
-	toMarkup _ = M.docTypeHtml $ do
-		M.head . M.title $ M.toHtml ("GCD Calculator" :: T.Text)
-		M.body . (M.form ! A.action "/gcd" ! A.method "post") $ do
-			M.input ! A.type_ "text" ! A.name "n"
-			M.input ! A.type_ "text" ! A.name "n"
-			M.button ! A.type_ "submit" $ "Compute GCD"
+instance ToHtml GetForm where
+	toHtml _ = doctypehtml_ $ do
+		head_ . title_ $ toHtml ("GCD Calculator" :: T.Text)
+		body_ . form_ [action_ "/gcd", method_ "post"] $ do
+			input_ [type_ "text", name_ "n"]
+			input_ [type_ "text", name_ "n"]
+			button_ [type_ "submit"] "Compute GCD"
+	toHtmlRaw = toHtml
 
 type API = Get '[HTML] GetForm
 

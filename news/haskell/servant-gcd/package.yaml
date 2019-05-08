@@ -24,8 +24,8 @@ dependencies:
 - text
 - warp
 - servant-server
-- servant-blaze
-- blaze-html
+- servant-lucid
+- lucid
 
 library:
   source-dirs: src
