@@ -30,6 +30,7 @@ render :: (Word, Word) -> Complex Double -> Complex Double -> Array Int Pixel8
 render wh@(w, h) lt rb = listArray (0, fromIntegral $ w * h - 1)
 	((toPixel . (`escapeTime` 255) . \xy -> pixelToPoint wh xy lt rb)
 			<$> [ (x, y) | y <- [0 .. h - 1], x <- [0 .. w - 1] ]
+--		`using` r0)
 --		`using` parList rseq)
 		`using` subList (fromIntegral $ w * h `div` 8))
 
