@@ -6,8 +6,6 @@ import Control.Arrow
 import System.IO
 import System.Environment
 
-import Control.Parallel.Strategies
-
 import Parse
 import Mandelbrot
 import Png
@@ -26,7 +24,6 @@ main = do
 			case prms of
 				Just (wh, lt, rb) -> do
 					let	pxls = render wh lt rb
-							`using` parList rsec
 					uncurry (writePngFromArray fp pxls)
 						$ (fromIntegral ***
 							fromIntegral) wh
