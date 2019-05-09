@@ -1,0 +1,4 @@
+.stack-work/
+mandelbrot.cabal
+*~
+/mandel.png
