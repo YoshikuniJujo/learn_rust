@@ -10,11 +10,11 @@ import Parse
 import Mandelbrot
 import SpeedChart
 
-mandelChart :: Int -> (Word, Word) -> Complex Double -> Complex Double -> IO ()
-mandelChart n wh lt rb = do
+mandelChart :: FilePath ->
+	Int -> (Word, Word) -> Complex Double -> Complex Double -> IO ()
+mandelChart fp n wh lt rb = do
 	ps <- speeds [0 .. n] $ \i -> render (2 ^ i) wh lt rb `seq` return ()
-	writeSpeedChart "mandel_speed.svg"
-		"Mandelbrot Speed" "i: (2 ^ i) par" "time, par" ps
+	writeSpeedChart fp "Mandelbrot Speed" "i: (2 ^ i) par" "time, par" ps
 
 getExponent :: Word -> Word -> Int
 getExponent w h = ge (w * h) 0
@@ -27,14 +27,14 @@ main = do
 	prg <- getProgName
 	args <- getArgs
 	case args of
-		[wh_, lt_, rb_] -> do
+		[fp, wh_, lt_, rb_] -> do
 			let	prms = do
 					wh <- parsePair wh_ 'x'
 					lt <- parseComplex lt_
 					rb <- parseComplex rb_
 					return (wh, lt, rb)
 			case prms of
-				Just (wh, lt, rb) -> mandelChart
+				Just (wh, lt, rb) -> mandelChart fp
 					(uncurry getExponent wh) wh lt rb
 				_ -> error "error parsing some arguments"
 		_ -> do	hPutStrLn stderr $
@@ -42,4 +42,4 @@ main = do
 				"FILE PIXELS UPPERLEFT LOWERRIGHT"
 			hPutStrLn stderr $
 				"Example: " ++ prg ++
-				" 1000x750 -1.20,0.35 -1,0.20"
+				"mandel_speed.svg 1000x750 -1.20,0.35 -1,0.20"
