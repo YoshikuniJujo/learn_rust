@@ -26,15 +26,17 @@ toPixel :: Maybe Word -> Pixel8
 toPixel Nothing = 0
 toPixel (Just c) = 255 - fromIntegral c
 
-render :: (Word, Word) -> Complex Double -> Complex Double -> Array Int Pixel8
-render wh@(w, h) lt rb = listArray (0, fromIntegral $ w * h - 1)
+render :: Word ->
+	(Word, Word) -> Complex Double -> Complex Double -> Array Int Pixel8
+render pn wh@(w, h) lt rb = listArray (0, fromIntegral $ w * h - 1)
 	((toPixel . (`escapeTime` 255) . \xy -> pixelToPoint wh xy lt rb)
 			<$> [ (x, y) | y <- [0 .. h - 1], x <- [0 .. w - 1] ]
 --		`using` r0)
 --		`using` parList rseq)
-		`using` subList (fromIntegral $ w * h `div` 8))
+		`using` subList (fromIntegral $ w * h `div` pn))
 
 groupN :: Int -> [a] -> [[a]]
+groupN 0 _ = error "groupN 0 not permitted"
 groupN _ [] = []
 groupN n xs = take n xs : groupN n (drop n xs)
 
