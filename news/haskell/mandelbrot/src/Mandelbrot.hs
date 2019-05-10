@@ -31,6 +31,8 @@ render pn wh@(w, h) lt rb = listArray (0, fromIntegral $ w * h - 1) pixels
 	toGray = maybe 0 ((255 -) . fromIntegral)
 
 parChunks :: NFData a => Int -> Strategy [a]
--- parChunks = (`parListChunk` rdeepseq)
+parChunks = (`parListChunk` rdeepseq)
+{-
 parChunks n _ | n < 1 = error "`parChunks n _': n should be positive"
 parChunks n xs = concat <$> mapM (rparWith rdeepseq) (chunksOf n xs)
+-}
