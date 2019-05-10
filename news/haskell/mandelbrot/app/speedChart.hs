@@ -3,6 +3,7 @@
 module Main where
 
 import Control.Monad
+import Control.DeepSeq
 import Data.Complex
 import System.IO
 import System.Environment
@@ -16,7 +17,7 @@ mandelChart :: FilePath -> Int ->
 	Int -> (Word, Word) -> Complex Double -> Complex Double -> IO ()
 mandelChart fp ts n wh lt rb = do
 	pss <- replicateM ts $
-		speeds [0 .. n] $ \i -> render (2 ^ i) wh lt rb `seq` return ()
+		speeds [0 .. n] $ \i -> render (2 ^ i) wh lt rb `deepseq` return ()
 	writeSpeedChart fp "Mandelbrot Speed" "i: (2 ^ i) par" "time, par" pss
 
 getExponent :: Word -> Word -> Int
