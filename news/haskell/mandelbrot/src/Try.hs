@@ -3,7 +3,6 @@
 module Try where
 
 import Control.Monad.ST
-import Data.Array
 import Data.Array.ST
 
 data T a = E | A a | T a :| T a deriving Show
