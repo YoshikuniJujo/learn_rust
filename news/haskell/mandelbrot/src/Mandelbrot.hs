@@ -2,11 +2,12 @@
 
 module Mandelbrot (render) where
 
-import Data.Array
-import Data.Complex
-import Codec.Picture
-
-import Control.Parallel.Strategies
+import Control.Parallel.Strategies (
+	NFData, Strategy, rparWith, rdeepseq, using, parListChunk)
+import Data.List.Split (chunksOf)
+import Data.Array (Array, listArray)
+import Data.Complex (Complex(..), magnitude)
+import Codec.Picture (Pixel8)
 
 escapeTime :: Complex Double -> Word -> Maybe Word
 escapeTime c lim = case dropWhile ((<= 2) . magnitude . snd)
@@ -14,31 +15,22 @@ escapeTime c lim = case dropWhile ((<= 2) . magnitude . snd)
 	[] -> Nothing
 	(i, _) : _ -> Just i
 
-pixelToPoint :: (Word, Word) ->
-	(Word, Word) -> Complex Double -> Complex Double -> Complex Double
-pixelToPoint (wp, hp) (x, y) (l :+ t) (r :+ b) =
-	(l + fromIntegral x * wc / fromIntegral wp) :+
-	(t - fromIntegral y * hc / fromIntegral hp)
-	where
-	(wc, hc) = (r - l, t - b)
-
-toPixel :: Maybe Word -> Pixel8
-toPixel Nothing = 0
-toPixel (Just c) = 255 - fromIntegral c
+pixelToPoint :: (Word, Word) -> Complex Double -> Complex Double ->
+	(Word, Word) -> Complex Double
+pixelToPoint (wp, hp) (l :+ t) (r :+ b) (x, y) =
+	(l + fromIntegral x * (r - l) / fromIntegral wp) :+
+	(t - fromIntegral y * (t - b) / fromIntegral hp)
 
 render :: Word ->
 	(Word, Word) -> Complex Double -> Complex Double -> Array Int Pixel8
-render pn wh@(w, h) lt rb = listArray (0, fromIntegral $ w * h - 1)
-	((toPixel . (`escapeTime` 255) . \xy -> pixelToPoint wh xy lt rb)
+render pn wh@(w, h) lt rb = listArray (0, fromIntegral $ w * h - 1) pixels
+	where
+	pixels = toGray . (`escapeTime` 255) . pixelToPoint wh lt rb
 			<$> [ (x, y) | y <- [0 .. h - 1], x <- [0 .. w - 1] ]
---		`using` r0)
---		`using` parList rseq)
-		`using` subList (fromIntegral $ w * h `div` pn))
+		`using` parChunks (fromIntegral $ w * h `div` pn)
+	toGray = maybe 0 ((255 -) . fromIntegral)
 
-groupN :: Int -> [a] -> [[a]]
-groupN 0 _ = error "groupN 0 not permitted"
-groupN _ [] = []
-groupN n xs = take n xs : groupN n (drop n xs)
-
-subList :: NFData a => Int -> Strategy [a]
-subList n xs = concat <$> mapM (rparWith rdeepseq) (groupN n xs)
+parChunks :: NFData a => Int -> Strategy [a]
+-- parChunks = (`parListChunk` rdeepseq)
+parChunks n _ | n < 1 = error "`parChunks n _': n should be positive"
+parChunks n xs = concat <$> mapM (rparWith rdeepseq) (chunksOf n xs)

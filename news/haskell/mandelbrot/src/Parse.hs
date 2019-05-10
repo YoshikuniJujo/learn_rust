@@ -2,8 +2,8 @@
 
 module Parse (parsePair, parseComplex) where
 
-import Data.Complex
-import Text.Read
+import Data.Complex (Complex(..))
+import Text.Read (readMaybe)
 
 parsePair :: Read a => String -> Char -> Maybe (a, a)
 parsePair s c = case span (/= c) s of
