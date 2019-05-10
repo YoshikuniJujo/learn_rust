@@ -42,4 +42,4 @@ main = do
 				"FILE PIXELS UPPERLEFT LOWERRIGHT"
 			hPutStrLn stderr $
 				"Example: " ++ prg ++
-				"mandel_speed.svg 1000x750 -1.20,0.35 -1,0.20"
+				" mandel_speed.svg 1000x750 -1.20,0.35 -1,0.20"
