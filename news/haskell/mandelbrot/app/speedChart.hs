@@ -13,7 +13,8 @@ import SpeedChart
 mandelChart :: Int -> (Word, Word) -> Complex Double -> Complex Double -> IO ()
 mandelChart n wh lt rb = do
 	ps <- speeds [0 .. n] $ \i -> render (2 ^ i) wh lt rb `seq` return ()
-	writeSpeedChart "mandel_speed.svg" "あいう" "えお" ps
+	writeSpeedChart "mandel_speed.svg"
+		"Mandelbrot Speed" "i: (2 ^ i) par" "time, par" ps
 
 getExponent :: Word -> Word -> Int
 getExponent w h = ge (w * h) 0
