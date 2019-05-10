@@ -3,6 +3,7 @@
 module SpeedChart (speeds, writeSpeedChart) where
 
 import Control.Arrow
+import Data.Foldable
 import Data.Traversable
 import Data.Time
 import Graphics.Rendering.Chart.Easy
@@ -18,13 +19,15 @@ speed act = do
 	(`diffUTCTime` t0) <$> getCurrentTime
 
 writeSpeedChart :: PlotValue a =>
-	FilePath -> String -> String -> String -> [(a, NominalDiffTime)] -> IO ()
+	FilePath -> String -> String -> String -> [[(a, NominalDiffTime)]] -> IO ()
 writeSpeedChart fp ttl xt lt ps_ = toFile def fp $ speedChart ttl xt lt ps
-	where ps = map (second $ fromRational . toRational) ps_
+	where ps = map (map $ second $ fromRational . toRational) ps_
 
-speedChart :: String -> String -> String -> [(a, Double)] -> EC (Layout a Double) ()
-speedChart ttl xt lt ps = do
+speedChart :: String -> String -> String ->
+	[[(a, Double)]] -> EC (Layout a Double) ()
+speedChart ttl xt lt pss = do
 	layout_title .= ttl
 	layout_x_axis .laxis_title .= xt -- "i: (2 ^ i) par"
 	layout_y_axis .laxis_title .= "sec"
-	plot $ line lt [ps]
+	for_ ([1 :: Int ..] `zip` pss) $ \(i, ps) ->
+		plot $ line (lt ++ " " ++ show i) [ps]

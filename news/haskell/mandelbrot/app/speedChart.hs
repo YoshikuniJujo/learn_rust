@@ -2,19 +2,22 @@
 
 module Main where
 
+import Control.Monad
 import Data.Complex
 import System.IO
 import System.Environment
+import Text.Read
 
 import Parse
 import Mandelbrot
 import SpeedChart
 
-mandelChart :: FilePath ->
+mandelChart :: FilePath -> Int ->
 	Int -> (Word, Word) -> Complex Double -> Complex Double -> IO ()
-mandelChart fp n wh lt rb = do
-	ps <- speeds [0 .. n] $ \i -> render (2 ^ i) wh lt rb `seq` return ()
-	writeSpeedChart fp "Mandelbrot Speed" "i: (2 ^ i) par" "time, par" ps
+mandelChart fp ts n wh lt rb = do
+	pss <- replicateM ts $
+		speeds [0 .. n] $ \i -> render (2 ^ i) wh lt rb `seq` return ()
+	writeSpeedChart fp "Mandelbrot Speed" "i: (2 ^ i) par" "time, par" pss
 
 getExponent :: Word -> Word -> Int
 getExponent w h = ge (w * h) 0
@@ -27,19 +30,20 @@ main = do
 	prg <- getProgName
 	args <- getArgs
 	case args of
-		[fp, wh_, lt_, rb_] -> do
+		[fp, ts_, wh_, lt_, rb_] -> do
 			let	prms = do
+					ts <- readMaybe ts_
 					wh <- parsePair wh_ 'x'
 					lt <- parseComplex lt_
 					rb <- parseComplex rb_
-					return (wh, lt, rb)
+					return (ts, wh, lt, rb)
 			case prms of
-				Just (wh, lt, rb) -> mandelChart fp
+				Just (ts, wh, lt, rb) -> mandelChart fp ts
 					(uncurry getExponent wh) wh lt rb
 				_ -> error "error parsing some arguments"
 		_ -> do	hPutStrLn stderr $
 				"Usage: mandel-speed " ++
-				"FILE PIXELS UPPERLEFT LOWERRIGHT"
+				"FILE TIMES PIXELS UPPERLEFT LOWERRIGHT"
 			hPutStrLn stderr $
 				"Example: " ++ prg ++
-				" mandel_speed.svg 1000x750 -1.20,0.35 -1,0.20"
+				" mandel_speed.svg 5 1000x750 -1.20,0.35 -1,0.20"
